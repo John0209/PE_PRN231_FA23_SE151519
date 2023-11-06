@@ -70,7 +70,7 @@ namespace BusinessLogic.Service
             m_update.DateOfBirth = student.DateOfBirth;
             m_update.Email = student.Email;
             m_update.GroupId = student.GroupId;
-            _unit.StudentRepository.Update(student);
+            _unit.StudentRepository.Update(m_update);
             var result = _unit.StudentRepository.Save();
             if (result > 0) return true;
             }

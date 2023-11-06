@@ -6,57 +6,49 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Entities.Models;
+using eStoreClient.Pages.Inheritance;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace Presentation.Pages
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel : ClientAbstract
     {
-        private readonly Entities.Models.Prn231Su23StudentGroupDbContext _context;
-
-        public DeleteModel(Entities.Models.Prn231Su23StudentGroupDbContext context)
+        public DeleteModel(IHttpClientFactory http, IHttpContextAccessor httpContextAccessor) : base(http, httpContextAccessor)
         {
-            _context = context;
         }
 
         [BindProperty]
-      public Student Student { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public Student Student { get; set; } = default!;
+        public async Task OnGetAsync(int? id)
         {
-            if (id == null || _context.Students == null)
+            string token = _context.HttpContext.Session.GetString("token");
+            // Thêm token vào tiêu đề yêu cầu HTTP
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            string url = $"api/students/{id}";
+            HttpResponseMessage response = await HttpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var content = await response.Content.ReadAsStringAsync();
+                Student = JsonConvert.DeserializeObject<Student>(content);
             }
-
-            var student = await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-            else 
-            {
-                Student = student;
-            }
-            return Page();
         }
-
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync()
         {
-            if (id == null || _context.Students == null)
+            string token = _context.HttpContext.Session.GetString("token");
+            // Thêm token vào tiêu đề yêu cầu HTTP
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            string url = $"api/students/{Student.Id}";
+            HttpResponseMessage response = await HttpClient.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                return RedirectToPage("Index");
             }
-            var student = await _context.Students.FindAsync(id);
-
-            if (student != null)
+            else
             {
-                Student = student;
-                _context.Students.Remove(Student);
-                await _context.SaveChangesAsync();
+                ViewData["Message"] = "Delete Fail!";
+                return Page();
             }
-
-            return RedirectToPage("./Index");
         }
     }
 }

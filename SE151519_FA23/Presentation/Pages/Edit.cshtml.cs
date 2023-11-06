@@ -7,71 +7,56 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Entities.Models;
+using eStoreClient.Pages.Inheritance;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Presentation.Pages
 {
-    public class EditModel : PageModel
+    public class EditModel : ClientAbstract
     {
-        private readonly Entities.Models.Prn231Su23StudentGroupDbContext _context;
-
-        public EditModel(Entities.Models.Prn231Su23StudentGroupDbContext context)
+        public EditModel(IHttpClientFactory http, IHttpContextAccessor httpContextAccessor) : base(http, httpContextAccessor)
         {
-            _context = context;
         }
 
         [BindProperty]
         public Student Student { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task OnGetAsync(int? id)
         {
-            if (id == null || _context.Students == null)
+            string token = _context.HttpContext.Session.GetString("token");
+            // Thêm token vào tiêu đề yêu cầu HTTP
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            string url = $"api/students/{id}";
+            HttpResponseMessage response = await HttpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var content = await response.Content.ReadAsStringAsync();
+                Student = JsonConvert.DeserializeObject<Student>(content);
             }
-
-            var student =  await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            Student = student;
-           ViewData["GroupId"] = new SelectList(_context.StudentGroups, "Id", "Id");
-            return Page();
         }
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            string token = _context.HttpContext.Session.GetString("token");
+            // Thêm token vào tiêu đề yêu cầu HTTP
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            string url = "api/students";
+            // Chuyển đổi đối tượng ProductRequest thành chuỗi JSON
+            var jsonContent = JsonConvert.SerializeObject(Student);
+            // Tạo nội dung HTTP để gửi đi
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            // Gửi yêu cầu POST đến API
+            var response = await HttpClient.PutAsync(url, httpContent);
+            if (response.IsSuccessStatusCode)
             {
+                return RedirectToPage("Index");
+            }
+            else
+            {
+                ViewData["Message"] = "Update Fail!";
                 return Page();
             }
-
-            _context.Attach(Student).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(Student.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
         }
 
-        private bool StudentExists(int id)
-        {
-          return (_context.Students?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

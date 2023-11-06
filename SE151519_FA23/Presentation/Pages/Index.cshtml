@@ -4,12 +4,31 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+@if (ViewData["Message"] != null)
+{
+    <h3 style="color:red">@ViewData["Message"]</h3>
+}
 <h1>Index</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<div>
+    <form method="post">
+        <div class="form-group" style="display:flex">
+        <select asp-for="groupId" class="form-control">
+            <option value="1">Group001</option>
+            <option value="2">Group002</option>
+            <option value="3">Group003</option>
+        </select>
+            <label asp-for="minBirthday" class="control-label"></label>
+            <input asp-for="minBirthday" class="form-control" />
+            <label asp-for="maxBirthday" class="control-label"></label>
+            <input asp-for="maxBirthday" class="form-control" />
+        <button type="submit">Search</button>
+        </div>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr>

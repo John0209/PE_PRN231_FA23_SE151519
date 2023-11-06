@@ -10,7 +10,7 @@ namespace ControllerAPI.Controllers
 {
     [Route("api/students")]
     [ApiController]
-   [Authorize(Roles = EnumClass.RoleNames.Staff)]
+  [Authorize(Roles = EnumClass.RoleNames.Staff)]
     public class StudentControllers : ControllerBase
     {
         IStudentService _student;
@@ -33,7 +33,7 @@ namespace ControllerAPI.Controllers
             if (result != null) return Ok(result);
             return BadRequest("Student don't exist in DB");
         }
-        [HttpGet("query")]
+        [HttpGet("search")]
         public IActionResult GetByQuery(int groupId, DateTime minBirthdate, DateTime maxBirthdate)
         {
             var result = _student.GetStudentByParameter(groupId,minBirthdate,maxBirthdate);

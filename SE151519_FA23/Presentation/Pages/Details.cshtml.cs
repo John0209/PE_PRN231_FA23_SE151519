@@ -6,37 +6,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Entities.Models;
+using eStoreClient.Pages.Inheritance;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace Presentation.Pages
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel : ClientAbstract
     {
-        private readonly Entities.Models.Prn231Su23StudentGroupDbContext _context;
-
-        public DetailsModel(Entities.Models.Prn231Su23StudentGroupDbContext context)
+        public DetailsModel(IHttpClientFactory http, IHttpContextAccessor httpContextAccessor) : base(http, httpContextAccessor)
         {
-            _context = context;
         }
 
-      public Student Student { get; set; } = default!; 
-
-        public async Task<IActionResult> OnGetAsync(int? id)
+        [BindProperty]
+        public Student Student { get; set; } = default!;
+        public async Task OnGetAsync(int? id)
         {
-            if (id == null || _context.Students == null)
+            string token = _context.HttpContext.Session.GetString("token");
+            // Thêm token vào tiêu đề yêu cầu HTTP
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            string url = $"api/students/{id}";
+            HttpResponseMessage response = await HttpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var content = await response.Content.ReadAsStringAsync();
+                Student = JsonConvert.DeserializeObject<Student>(content);
             }
-
-            var student = await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            else 
-            {
-                Student = student;
-            }
-            return Page();
         }
     }
 }

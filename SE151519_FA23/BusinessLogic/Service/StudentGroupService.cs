@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.IService;
 using Entities.IRepositories;
+using Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace BusinessLogic.Service
         public StudentGroupService(IUnitRepository unit)
         {
             _unit = unit;
+        }
+
+        public List<StudentGroup> GetAll()
+        {
+            return _unit.StudentGroupRepository.GetAll();
         }
     }
 }

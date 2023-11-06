@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace BusinessLogic.IService
 {
     public interface IStudentGroupService
     {
+        public List<StudentGroup> GetAll();
     }
 }

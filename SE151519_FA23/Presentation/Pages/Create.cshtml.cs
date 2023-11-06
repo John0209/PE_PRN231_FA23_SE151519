@@ -6,40 +6,48 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Entities.Models;
+using eStoreClient.Pages.Inheritance;
+using Newtonsoft.Json;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace Presentation.Pages
 {
-    public class CreateModel : PageModel
+    public class CreateModel : ClientAbstract
     {
-        private readonly Entities.Models.Prn231Su23StudentGroupDbContext _context;
-
-        public CreateModel(Entities.Models.Prn231Su23StudentGroupDbContext context)
+        public CreateModel(IHttpClientFactory http, IHttpContextAccessor httpContextAccessor) : base(http, httpContextAccessor)
         {
-            _context = context;
-        }
-
-        public IActionResult OnGet()
-        {
-        ViewData["GroupId"] = new SelectList(_context.StudentGroups, "Id", "Id");
-            return Page();
         }
 
         [BindProperty]
         public Student Student { get; set; } = default!;
-        
+        public IActionResult OnGet()
+        {
+            return Page();
+        }
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.Students == null || Student == null)
+            string token = _context.HttpContext.Session.GetString("token");
+            // Thêm token vào tiêu đề yêu cầu HTTP
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            string url = "api/students";
+            // Chuyển đổi đối tượng ProductRequest thành chuỗi JSON
+            var jsonContent = JsonConvert.SerializeObject(Student);
+            // Tạo nội dung HTTP để gửi đi
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            // Gửi yêu cầu POST đến API
+            var response = await HttpClient.PostAsync(url, httpContent);
+            if (response.IsSuccessStatusCode)
             {
+                return RedirectToPage("Index");
+            }
+            else
+            {
+                ViewData["Message"] = "Create Fail!";
                 return Page();
             }
-
-            _context.Students.Add(Student);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
         }
+
     }
 }

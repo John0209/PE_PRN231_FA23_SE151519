@@ -16,6 +16,6 @@ public partial class Student
     //[Range(18, 100, ErrorMessage = "Age must be between 18 and 100.")]
     public DateTime? DateOfBirth { get; set; }
     public int? GroupId { get; set; }
-   // [JsonIgnore]
+    [JsonIgnore]
     public virtual StudentGroup? Group { get; set; }
 }
