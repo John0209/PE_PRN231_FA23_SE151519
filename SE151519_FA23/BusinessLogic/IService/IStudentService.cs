@@ -10,10 +10,10 @@ namespace BusinessLogic.IService
     public interface IStudentService
     {
         public List<Student> GetAll();
-        public bool AddStudent(Student student);
-        public bool UpdateStudent(Student student);
-        public bool DeleteStudent(int id);
-        public Student GetStudentById(int id);
+        public bool Add(Student student);
+        public bool Update(Student student);
+        public bool Delete(int id);
+        public Student GetById(int id);
         public List<Student> GetStudentByParameter(int groupId, DateTime minBirthday, DateTime maxBirthday);
     }
 }

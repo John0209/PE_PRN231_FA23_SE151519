@@ -18,7 +18,7 @@ namespace BusinessLogic.Service
             _unit = unit;
         }
 
-        public bool AddStudent(Student student)
+        public bool Add(Student student)
         {
             var m_add= new Student();
             m_add.FullName = student.FullName;
@@ -31,9 +31,9 @@ namespace BusinessLogic.Service
             return false;
         }
 
-        public bool DeleteStudent(int id)
+        public bool Delete(int id)
         {
-            var student= GetStudentById(id);
+            var student= GetById(id);
             if (student != null)
             {
             _unit.StudentRepository.Delete(student);
@@ -48,7 +48,7 @@ namespace BusinessLogic.Service
             return _unit.StudentRepository.GetAll();
         }
 
-        public Student GetStudentById(int id)
+        public Student GetById(int id)
         {
             return _unit.StudentRepository.GetById(id);
         }
@@ -61,9 +61,9 @@ namespace BusinessLogic.Service
             return null;
         }
 
-        public bool UpdateStudent(Student student)
+        public bool Update(Student student)
         {
-            var m_update = GetStudentById(student.Id);
+            var m_update = GetById(student.Id);
             if (m_update != null)
             {
             m_update.FullName = student.FullName;

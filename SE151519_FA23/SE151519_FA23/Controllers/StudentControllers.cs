@@ -29,7 +29,7 @@ namespace ControllerAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetByid(int id)
         {
-            var result = _student.GetStudentById(id);
+            var result = _student.GetById(id);
             if (result != null) return Ok(result);
             return BadRequest("Student don't exist in DB");
         }
@@ -43,21 +43,21 @@ namespace ControllerAPI.Controllers
         [HttpPost]
         public IActionResult Post(Student student)
         {
-            var result= _student.AddStudent(student);
+            var result= _student.Add(student);
             if (result) return Ok("Add Student successful!");
             return BadRequest("Add Student failed!");
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = _student.DeleteStudent(id);
+            var result = _student.Delete(id);
             if (result) return Ok("Delete Student successful!");
             return BadRequest("Delete Student failed!");
         }
         [HttpPut]
         public IActionResult Put(Student student)
         {
-            var result = _student.UpdateStudent(student);
+            var result = _student.Update(student);
             if (result) return Ok("Update Student successful!");
             return BadRequest("Update Student failed!");
         }
