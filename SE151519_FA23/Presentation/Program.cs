@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+//Add them vao 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
@@ -25,5 +26,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+//Add
 app.UseSession();
 app.Run();

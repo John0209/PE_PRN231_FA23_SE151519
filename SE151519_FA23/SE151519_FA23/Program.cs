@@ -1,5 +1,4 @@
-﻿using BusinessLogic.IService;
-using BusinessLogic.Repositories;
+﻿using BusinessLogic.Repositories;
 using BusinessLogic.Service;
 using Entities.IRepositories;
 using Entities.Models;
@@ -17,13 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Prn231Su23StudentGroupDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DBSQL")));
 
-builder.Services.AddControllers()
-//    .AddJsonOptions(options =>
-//{
-//    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//    // Other options if needed
-//});
-;
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // cài đặt swagger set token

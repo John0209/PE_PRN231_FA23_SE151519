@@ -1,4 +1,4 @@
-﻿using BusinessLogic.IService;
+﻿using BusinessLogic.Token.IService;
 using Entities.IRepositories;
 using Entities.Models;
 using System;
@@ -30,7 +30,14 @@ namespace BusinessLogic.Service
             if (result > 0) return true;
             return false;
         }
-
+        //identity
+        //private int GenerateId()
+        //{
+        //    var movies = GetAll();
+        //    var movieId = movies.LastOrDefault().MovieId;
+        //    if (movieId != null) return ++movieId;
+        //    return 0;
+        //}
         public bool Delete(int id)
         {
             var student= GetById(id);

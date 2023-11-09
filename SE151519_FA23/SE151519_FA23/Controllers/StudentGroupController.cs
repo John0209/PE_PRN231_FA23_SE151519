@@ -1,4 +1,4 @@
-﻿using BusinessLogic.IService;
+﻿using BusinessLogic.Token.IService;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

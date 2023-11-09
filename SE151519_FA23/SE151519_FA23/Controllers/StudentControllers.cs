@@ -1,5 +1,5 @@
-﻿using BusinessLogic.IService;
-using BusinessLogic.Token;
+﻿using BusinessLogic.Token;
+using BusinessLogic.Token.IService;
 using ControllerAPI.Enum;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
